@@ -1,4 +1,6 @@
-## GoHire
+## GoHire 
+<img width="467" height="426" alt="image" src="https://github.com/user-attachments/assets/18b25424-b172-4f5e-833e-801bc54bd45d" />
+
 GoHire will be a project which will scrape hiring data from different websites available on the internet and will present to you on a single a web page or on your terminal. So instead of searching different websites for finding jobs and internships you only have to search on GoHire and it will categorically search different websites and scrape the relevant info.
 
 ### High level architecture overview
