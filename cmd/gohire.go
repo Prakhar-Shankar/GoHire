@@ -6,8 +6,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"strings"
 
 	"github.com/spf13/cobra"
+	"gohire/scraper"
 )
 
 // gohireCmd represents the gohire command
@@ -17,38 +20,36 @@ var gohireCmd = &cobra.Command{
 	Long: `This command helps a user search for a job available at different platform like indeed, hirist, etc, at the same time and shows the result here, hence a user dont have to visit multiple websites for same job role.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		jobTitle, _ := cmd.Flags().GetString("title")
-		if jobTitle == "Golang"{
-			fmt.Printf("title: %s\n", jobTitle)
-		}else{
-			fmt.Printf("Wrong title\n")
-		}
-
 		jobLocation, _ := cmd.Flags().GetString("location")
-		if jobLocation == "Remote"{
-			fmt.Printf("location: %s\n", jobLocation)
-		}else{
-			fmt.Printf("Wrong location\n")
-		}
-
 		jobType, _ := cmd.Flags().GetString("type")
-		if jobType == "Intern"{
-			fmt.Printf("type: %s\n", jobType)
-		}else{
-			fmt.Printf("Wrong type\n")
+
+		//Building query string for indeed
+		query := jobTitle
+		if jobLocation != "" {
+			query += " " + jobLocation
 		}
+		if jobType != ""{
+			query += " " + jobType
+		}
+		
+		// fetching jobs from indeed 
+		jobs, err := scraper.FetchIndeedJobs(strings.TrimSpace(query))
+		if err != nil {
+			log.Fatalf("Error fetching jobs: %v", err)
+		}
+
+		// Display results
+		if len(jobs) == 0 {
+			fmt.Println("No jobs found.")
+			return
+		}
+
+		for i, job := range jobs {
+			fmt.Printf("%d. %s | %s | %s\n   %s\n\n", i+1, job.Title, job.Company, job.Location, job.Link)
+		} 
+
+
 	},
-}
-
-func getTitle(jobTitle string) {
-    fmt.Printf("You searched for a job: %v",  jobTitle)
-}
-
-func getLocation(jobLocation string) {
-    fmt.Printf("You searched for a job: %v",  jobLocation)
-}
-
-func getType(jobType string) {
-    fmt.Printf("You searched for a job: %v",  jobType)
 }
 
 
